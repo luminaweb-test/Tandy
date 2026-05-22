@@ -1,0 +1,2493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tandy — Heritage Leathercraft Since 1879</title>
+
+  <!-- ========== Google Fonts ========== -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Inter:wght@300;400;500;600&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- ========== Tailwind CSS ========== -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- ========== Font Awesome ========== -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <!-- ========== GSAP + ScrollTrigger ========== -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+  <!-- ========== Tailwind Config ========== -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            charcoal:   '#121212',
+            parchment:  '#FDFBF7',
+            'parchment-dark': '#F0EBE1',
+            red:        '#A8232A',
+            'red-dark': '#7A1A1F',
+            cognac:     '#C68B59',
+            'cognac-light': '#D9A87A',
+            espresso:   '#2B1E16',
+            brass:      '#B8960C',
+            'cream':    '#F5F0E8',
+          },
+          fontFamily: {
+            serif:    ['"Cormorant Garamond"', '"Playfair Display"', 'Georgia', 'serif'],
+            display:  ['"Playfair Display"', 'Georgia', 'serif'],
+            sans:     ['Inter', 'Montserrat', 'system-ui', 'sans-serif'],
+            mono:     ['Montserrat', 'monospace'],
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    /* =========================================
+       ROOT & SCROLL
+    ========================================= */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background-color: #121212;
+      color: #FDFBF7;
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* =========================================
+       GSAP SAFETY NET
+       Elements are visible by default.
+       GSAP will override opacity/transform at
+       runtime — but if it fails or is slow,
+       nothing disappears permanently.
+    ========================================= */
+    .stat-block,
+    #hides-header, #hide-grid .hide-card,
+    #parallax-1 .parallax-caption > div,
+    #parallax-2 > div > div,
+    #shop-header, #product-grid .product-item,
+    #tools-header, #tool-grid .tool-card,
+    #makers-header, .maker-stagger,
+    #makers-cta, #process-img-wrap,
+    #proc-label, #proc-title, .process-step,
+    #newsletter-block > *,
+    .gold-line {
+      opacity: 1 !important;
+      transform: none !important;
+      /* GSAP will override these at runtime with its own values.
+         The !important only wins if GSAP never runs. */
+    }
+    /* Re-allow GSAP to take over once it registers */
+    body.gsap-ready .stat-block,
+    body.gsap-ready #hides-header,
+    body.gsap-ready #hide-grid .hide-card,
+    body.gsap-ready #parallax-1 .parallax-caption > div,
+    body.gsap-ready #parallax-2 > div > div,
+    body.gsap-ready #shop-header,
+    body.gsap-ready #product-grid .product-item,
+    body.gsap-ready #tools-header,
+    body.gsap-ready #tool-grid .tool-card,
+    body.gsap-ready #makers-header,
+    body.gsap-ready .maker-stagger,
+    body.gsap-ready #makers-cta,
+    body.gsap-ready #process-img-wrap,
+    body.gsap-ready #proc-label,
+    body.gsap-ready #proc-title,
+    body.gsap-ready .process-step,
+    body.gsap-ready #newsletter-block > *,
+    body.gsap-ready .gold-line {
+      opacity: unset;
+      transform: unset;
+    }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #121212; }
+    ::-webkit-scrollbar-thumb { background: #C68B59; border-radius: 3px; }
+
+
+
+    /* =========================================
+       LEATHER-GRAIN TEXTURE OVERLAY
+    ========================================= */
+    .leather-grain {
+      position: relative;
+    }
+    .leather-grain::after {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23noise)' opacity='0.06'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 1; border-radius: inherit;
+    }
+
+    /* =========================================
+       NAVIGATION
+    ========================================= */
+    #navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 500;
+      transition: background 0.4s ease, padding 0.4s ease, box-shadow 0.4s ease;
+      padding: 1.5rem 2rem;
+    }
+    #navbar.scrolled {
+      background: rgba(18,18,18,0.97);
+      backdrop-filter: blur(20px);
+      padding: 0.8rem 2rem;
+      box-shadow: 0 1px 0 rgba(198,139,89,0.2);
+    }
+    .nav-link {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #FDFBF7;
+      text-decoration: none;
+      position: relative;
+      padding-bottom: 2px;
+      transition: color 0.3s ease;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute; bottom: -2px; left: 0;
+      width: 0; height: 1px;
+      background: #C68B59;
+      transition: width 0.35s ease;
+    }
+    .nav-link:hover { color: #C68B59; }
+    .nav-link:hover::after { width: 100%; }
+
+    /* =========================================
+       HERO
+    ========================================= */
+    #hero {
+      position: relative;
+      height: 100vh; min-height: 700px;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    #hero-bg {
+      position: absolute; inset: 0;
+      background-image: url('https://images.pexels.com/photos/4452619/pexels-photo-4452619.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=1920');
+      background-size: cover; background-position: center;
+      transform-origin: center;
+      will-change: transform;
+    }
+    #hero-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(
+        135deg,
+        rgba(18,18,18,0.88) 0%,
+        rgba(43,30,22,0.72) 45%,
+        rgba(18,18,18,0.55) 100%
+      );
+    }
+    .hero-badge {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: #C68B59;
+      border: 1px solid rgba(198,139,89,0.4);
+      padding: 0.4rem 1.2rem;
+      display: inline-block;
+      margin-bottom: 1.5rem;
+    }
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3rem, 8vw, 7rem);
+      font-weight: 900;
+      line-height: 1.0;
+      color: #FDFBF7;
+      letter-spacing: -0.02em;
+    }
+    .hero-title em {
+      font-style: italic;
+      color: #C68B59;
+    }
+    .hero-subtitle {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+      font-weight: 300;
+      color: rgba(253,251,247,0.75);
+      letter-spacing: 0.05em;
+      margin-top: 1.2rem;
+      max-width: 520px;
+    }
+    .hero-divider {
+      width: 60px; height: 1px;
+      background: linear-gradient(90deg, #C68B59, transparent);
+      margin: 1.8rem 0;
+    }
+    .btn-primary {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      background: #A8232A;
+      color: #FDFBF7;
+      border: none;
+      padding: 1rem 2.4rem;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .btn-primary::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: #7A1A1F;
+      transform: translateX(-101%);
+      transition: transform 0.4s cubic-bezier(0.4,0,0.2,1);
+    }
+    .btn-primary:hover { box-shadow: 0 8px 30px rgba(168,35,42,0.4); transform: translateY(-2px); }
+    .btn-primary:hover::before { transform: translateX(0); }
+    .btn-primary span { position: relative; z-index: 1; }
+    .btn-outline {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      background: transparent;
+      color: #FDFBF7;
+      border: 1px solid rgba(253,251,247,0.4);
+      padding: 1rem 2.4rem;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: border-color 0.3s ease, color 0.3s ease, background 0.3s ease;
+    }
+    .btn-outline:hover { border-color: #C68B59; color: #C68B59; }
+
+    /* =========================================
+       MARQUEE / TICKER
+    ========================================= */
+    .marquee-track {
+      display: flex;
+      animation: marquee-scroll 28s linear infinite;
+      white-space: nowrap;
+    }
+    @keyframes marquee-scroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .marquee-item {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.62rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: #C68B59;
+      padding: 0 2rem;
+    }
+
+    /* =========================================
+       SECTION LABELS
+    ========================================= */
+    .section-label {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.62rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: #C68B59;
+      margin-bottom: 1rem;
+    }
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 5vw, 3.8rem);
+      font-weight: 700;
+      line-height: 1.1;
+    }
+    .section-title em { font-style: italic; color: #C68B59; }
+
+    /* =========================================
+       HIDE SELECTION CARDS
+    ========================================= */
+    .hide-card {
+      position: relative; overflow: hidden;
+      cursor: pointer;
+      border: 1px solid rgba(198,139,89,0.15);
+      transition: border-color 0.35s ease, transform 0.35s ease;
+      background: #1A1410;
+    }
+    .hide-card:hover { border-color: #C68B59; transform: translateY(-6px); }
+    .hide-card-img {
+      width: 100%; height: 260px;
+      object-fit: cover;
+      transition: transform 0.6s cubic-bezier(0.4,0,0.2,1);
+      display: block;
+    }
+    .hide-card:hover .hide-card-img { transform: scale(1.06); }
+    .hide-card-body { padding: 1.6rem; }
+    .hide-card-tag {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.58rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: #C68B59;
+      margin-bottom: 0.5rem;
+    }
+    .hide-card-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.6rem;
+      color: #FDFBF7;
+    }
+    .hide-card-desc {
+      font-size: 0.82rem;
+      color: rgba(253,251,247,0.55);
+      line-height: 1.7;
+      font-family: 'Inter', sans-serif;
+    }
+    .hide-badge {
+      position: absolute; top: 1rem; right: 1rem;
+      background: rgba(43,30,22,0.9);
+      border: 1px solid rgba(198,139,89,0.3);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #C68B59;
+      padding: 0.3rem 0.8rem;
+      backdrop-filter: blur(8px);
+    }
+
+    /* =========================================
+       HIDE MODAL
+    ========================================= */
+    #hide-modal-backdrop {
+      position: fixed; inset: 0;
+      background: rgba(10,8,6,0.85);
+      backdrop-filter: blur(12px);
+      z-index: 800;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.35s ease;
+    }
+    #hide-modal-backdrop.open { opacity: 1; pointer-events: all; }
+    #hide-modal {
+      background: #1A1410;
+      border: 1px solid rgba(198,139,89,0.25);
+      max-width: 780px; width: 90%;
+      max-height: 90vh; overflow-y: auto;
+      position: relative;
+      transform: translateY(30px) scale(0.97);
+      transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    #hide-modal-backdrop.open #hide-modal { transform: translateY(0) scale(1); }
+    .modal-close {
+      position: absolute; top: 1.2rem; right: 1.2rem;
+      width: 36px; height: 36px;
+      border: 1px solid rgba(198,139,89,0.3);
+      background: transparent;
+      color: #C68B59;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s, color 0.2s;
+    }
+    .modal-close:hover { background: #C68B59; color: #121212; }
+    .modal-stat {
+      background: rgba(43,30,22,0.6);
+      border: 1px solid rgba(198,139,89,0.15);
+      padding: 1rem 1.2rem;
+      text-align: center;
+    }
+    .modal-stat-val {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #C68B59;
+    }
+    .modal-stat-lbl {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(253,251,247,0.5);
+      margin-top: 0.3rem;
+    }
+    .use-tag {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border: 1px solid rgba(198,139,89,0.3);
+      color: #C68B59;
+      padding: 0.3rem 0.8rem;
+      display: inline-block;
+      margin: 0.25rem;
+    }
+
+    /* =========================================
+       PARALLAX SECTION
+    ========================================= */
+    .parallax-img-wrap {
+      position: relative; overflow: hidden;
+      height: 540px;
+    }
+    .parallax-img {
+      width: 100%; height: 130%;
+      object-fit: cover;
+      position: absolute; top: -15%;
+      will-change: transform;
+    }
+    .parallax-caption {
+      position: absolute; inset: 0;
+      background: linear-gradient(to right, rgba(18,18,18,0.8) 0%, transparent 60%);
+      display: flex; align-items: flex-end;
+      padding: 3rem;
+    }
+
+    /* =========================================
+       PRODUCT CARDS
+    ========================================= */
+    .product-card {
+      position: relative; overflow: hidden;
+      background: #1A1410;
+      border: 1px solid rgba(198,139,89,0.1);
+      transition: border-color 0.3s ease, transform 0.4s ease, box-shadow 0.4s ease;
+      cursor: pointer;
+      group: true;
+    }
+    .product-card:hover {
+      border-color: rgba(198,139,89,0.4);
+      transform: translateY(-8px);
+      box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+    }
+    .product-card-img {
+      width: 100%; height: 300px;
+      object-fit: cover;
+      transition: transform 0.65s cubic-bezier(0.4,0,0.2,1);
+      display: block;
+    }
+    .product-card:hover .product-card-img { transform: scale(1.07); }
+    .product-card-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(18,18,18,0.9) 0%, transparent 55%);
+      opacity: 0;
+      transition: opacity 0.35s ease;
+      display: flex; align-items: flex-end;
+      padding: 1.5rem;
+    }
+    .product-card:hover .product-card-overlay { opacity: 1; }
+    .product-badge {
+      position: absolute; top: 1rem; left: 1rem;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.55rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      padding: 0.28rem 0.7rem;
+      background: #A8232A;
+      color: #FDFBF7;
+    }
+    .product-info { padding: 1.4rem; }
+    .product-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #FDFBF7;
+      margin-bottom: 0.3rem;
+    }
+    .product-sub {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.75rem;
+      color: rgba(253,251,247,0.45);
+      margin-bottom: 0.8rem;
+    }
+    .product-price {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: #C68B59;
+    }
+    .add-to-cart-btn {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      background: #A8232A;
+      color: #FDFBF7;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      cursor: pointer;
+      transition: background 0.25s ease, transform 0.2s ease;
+    }
+    .add-to-cart-btn:hover { background: #7A1A1F; transform: scale(1.04); }
+
+    /* =========================================
+       FILTER TABS
+    ========================================= */
+    .filter-tab {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 0.6rem 1.4rem;
+      border: 1px solid rgba(198,139,89,0.2);
+      background: transparent;
+      color: rgba(253,251,247,0.5);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .filter-tab:hover { color: #C68B59; border-color: #C68B59; }
+    .filter-tab.active {
+      background: #A8232A;
+      border-color: #A8232A;
+      color: #FDFBF7;
+    }
+    .product-item { transition: opacity 0.4s ease, transform 0.4s ease; }
+    .product-item.hidden { opacity: 0; pointer-events: none; transform: scale(0.95); display: none; }
+
+    /* =========================================
+       TOOL CARDS (3D Tilt)
+    ========================================= */
+    .tool-card {
+      background: linear-gradient(135deg, #1E1208 0%, #2B1E16 100%);
+      border: 1px solid rgba(198,139,89,0.15);
+      padding: 2rem 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+      transform-style: preserve-3d;
+      will-change: transform;
+      position: relative;
+      overflow: hidden;
+    }
+    .tool-card::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(198,139,89,0.08) 0%, transparent 70%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .tool-card:hover { border-color: rgba(198,139,89,0.5); box-shadow: 0 16px 48px rgba(0,0,0,0.6); }
+    .tool-card:hover::before { opacity: 1; }
+    .tool-icon {
+      font-size: 2.4rem;
+      color: #C68B59;
+      margin-bottom: 1.2rem;
+      display: block;
+      transition: transform 0.3s ease;
+    }
+    .tool-card:hover .tool-icon { transform: translateY(-4px) scale(1.1); }
+    .tool-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #FDFBF7;
+      margin-bottom: 0.5rem;
+    }
+    .tool-desc {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.75rem;
+      color: rgba(253,251,247,0.45);
+      line-height: 1.7;
+      margin-bottom: 1rem;
+    }
+    .tool-price {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.3rem;
+      color: #C68B59;
+      font-weight: 600;
+    }
+
+    /* =========================================
+       MAKER SPOTLIGHT CARDS
+    ========================================= */
+    .maker-card {
+      position: relative; overflow: hidden;
+      border: 1px solid rgba(198,139,89,0.12);
+      background: #1A1410;
+    }
+    .maker-card-img {
+      width: 100%; height: 320px;
+      object-fit: cover;
+      transition: transform 0.6s ease;
+      display: block;
+    }
+    .maker-card:hover .maker-card-img { transform: scale(1.05); }
+    .maker-card-info {
+      padding: 1.5rem;
+      background: linear-gradient(to top, #121212 0%, rgba(18,18,18,0.9) 100%);
+    }
+    .maker-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #FDFBF7;
+      margin-bottom: 0.25rem;
+    }
+    .maker-handle {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      color: #C68B59;
+    }
+
+    /* =========================================
+       CART DRAWER
+    ========================================= */
+    #cart-backdrop {
+      position: fixed; inset: 0;
+      background: rgba(10,8,6,0.7);
+      backdrop-filter: blur(8px);
+      z-index: 700;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.35s ease;
+    }
+    #cart-backdrop.open { opacity: 1; pointer-events: all; }
+    #cart-drawer {
+      position: fixed; top: 0; right: 0;
+      width: min(420px, 100vw);
+      height: 100vh;
+      background: #121212;
+      border-left: 1px solid rgba(198,139,89,0.2);
+      z-index: 701;
+      transform: translateX(105%);
+      transition: transform 0.45s cubic-bezier(0.4,0,0.2,1);
+      display: flex; flex-direction: column;
+    }
+    #cart-backdrop.open #cart-drawer { transform: translateX(0); }
+    .cart-header {
+      padding: 1.8rem 1.8rem 1.2rem;
+      border-bottom: 1px solid rgba(198,139,89,0.15);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .cart-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #FDFBF7;
+    }
+    .cart-close {
+      width: 36px; height: 36px;
+      border: 1px solid rgba(198,139,89,0.3);
+      background: transparent;
+      color: #C68B59;
+      cursor: pointer;
+      font-size: 1rem;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s;
+    }
+    .cart-close:hover { background: #C68B59; color: #121212; }
+    #cart-items { flex: 1; overflow-y: auto; padding: 1.2rem 1.8rem; }
+    .cart-item {
+      display: flex; gap: 1rem; align-items: center;
+      padding: 1rem 0;
+      border-bottom: 1px solid rgba(198,139,89,0.1);
+      animation: fadeIn 0.3s ease;
+    }
+    @keyframes fadeIn { from { opacity: 0; transform: translateX(10px); } to { opacity: 1; transform: translateX(0); } }
+    .cart-item-img {
+      width: 68px; height: 68px;
+      object-fit: cover; flex-shrink: 0;
+    }
+    .cart-item-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 0.95rem;
+      color: #FDFBF7;
+      margin-bottom: 0.2rem;
+    }
+    .cart-item-price {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1rem;
+      color: #C68B59;
+    }
+    .cart-item-remove {
+      margin-left: auto;
+      background: none; border: none;
+      color: rgba(253,251,247,0.3);
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+    .cart-item-remove:hover { color: #A8232A; }
+    #cart-footer {
+      padding: 1.4rem 1.8rem;
+      border-top: 1px solid rgba(198,139,89,0.15);
+      background: #1A1410;
+    }
+    .cart-total {
+      display: flex; justify-content: space-between; align-items: baseline;
+      margin-bottom: 1.2rem;
+    }
+    .cart-total-label {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(253,251,247,0.5);
+    }
+    .cart-total-val {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.8rem;
+      color: #C68B59;
+      font-weight: 600;
+    }
+    .empty-cart {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: rgba(253,251,247,0.3);
+    }
+    .empty-cart i { font-size: 2.5rem; margin-bottom: 1rem; display: block; color: rgba(198,139,89,0.25); }
+
+    /* =========================================
+       MOBILE NAV DRAWER
+    ========================================= */
+    #mobile-nav {
+      position: fixed; top: 0; left: 0;
+      width: min(320px, 85vw); height: 100vh;
+      background: #121212;
+      border-right: 1px solid rgba(198,139,89,0.2);
+      z-index: 701;
+      transform: translateX(-105%);
+      transition: transform 0.45s cubic-bezier(0.4,0,0.2,1);
+      display: flex; flex-direction: column;
+      padding: 2rem;
+    }
+    #mobile-nav.open { transform: translateX(0); }
+    #mobile-nav-backdrop {
+      position: fixed; inset: 0;
+      background: rgba(10,8,6,0.7);
+      backdrop-filter: blur(6px);
+      z-index: 700;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.35s ease;
+    }
+    #mobile-nav-backdrop.open { opacity: 1; pointer-events: all; }
+    .mobile-nav-link {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.75rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: rgba(253,251,247,0.7);
+      text-decoration: none;
+      padding: 1rem 0;
+      border-bottom: 1px solid rgba(198,139,89,0.1);
+      transition: color 0.3s;
+      display: block;
+    }
+    .mobile-nav-link:hover { color: #C68B59; }
+
+    /* =========================================
+       STATS BAR
+    ========================================= */
+    .stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.2rem, 5vw, 3.5rem);
+      font-weight: 900;
+      color: #C68B59;
+      line-height: 1;
+    }
+    .stat-label {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(253,251,247,0.4);
+      margin-top: 0.5rem;
+    }
+
+    /* =========================================
+       PROCESS STEPS
+    ========================================= */
+    .process-step {
+      position: relative;
+      padding-left: 3.5rem;
+    }
+    .step-num {
+      position: absolute; left: 0; top: 0;
+      font-family: 'Playfair Display', serif;
+      font-size: 3rem;
+      font-weight: 900;
+      color: rgba(198,139,89,0.12);
+      line-height: 1;
+    }
+    .step-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #FDFBF7;
+      margin-bottom: 0.5rem;
+    }
+    .step-desc {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.8rem;
+      color: rgba(253,251,247,0.45);
+      line-height: 1.8;
+    }
+    .step-line {
+      position: absolute; left: 1.1rem; top: 3.2rem;
+      width: 1px; height: calc(100% + 2rem);
+      background: linear-gradient(to bottom, rgba(198,139,89,0.3), transparent);
+    }
+
+    /* =========================================
+       NEWSLETTER
+    ========================================= */
+    .newsletter-wrap {
+      background: linear-gradient(135deg, #1A0D08, #2B1E16);
+      border: 1px solid rgba(198,139,89,0.2);
+      position: relative; overflow: hidden;
+    }
+    .newsletter-wrap::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+    .newsletter-input {
+      background: rgba(253,251,247,0.05);
+      border: 1px solid rgba(198,139,89,0.25);
+      color: #FDFBF7;
+      padding: 0.9rem 1.4rem;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.85rem;
+      outline: none;
+      transition: border-color 0.3s;
+      width: 100%;
+    }
+    .newsletter-input::placeholder { color: rgba(253,251,247,0.3); }
+    .newsletter-input:focus { border-color: #C68B59; }
+
+    /* =========================================
+       FOOTER
+    ========================================= */
+    footer {
+      background: #0A0806;
+      border-top: 1px solid rgba(198,139,89,0.12);
+    }
+    .footer-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      font-weight: 900;
+      color: #FDFBF7;
+      letter-spacing: -0.02em;
+    }
+    .footer-logo span { color: #C68B59; }
+    .footer-link {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: rgba(253,251,247,0.4);
+      text-decoration: none;
+      transition: color 0.3s;
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+    .footer-link:hover { color: #C68B59; }
+    .social-btn {
+      width: 36px; height: 36px;
+      border: 1px solid rgba(198,139,89,0.2);
+      display: flex; align-items: center; justify-content: center;
+      color: rgba(253,251,247,0.4);
+      font-size: 0.85rem;
+      text-decoration: none;
+      transition: border-color 0.3s, color 0.3s, background 0.3s;
+    }
+    .social-btn:hover { border-color: #C68B59; color: #C68B59; background: rgba(198,139,89,0.08); }
+
+    /* =========================================
+       MISC UTILITIES
+    ========================================= */
+    .gold-line {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #C68B59, transparent);
+      margin: 0 auto;
+    }
+    .text-cognac { color: #C68B59; }
+    .border-cognac { border-color: rgba(198,139,89,0.25); }
+    .bg-espresso { background-color: #2B1E16; }
+    .bg-dark { background-color: #0F0C09; }
+    .will-animate { opacity: 0; }
+    .overflow-hidden { overflow: hidden; }
+
+    /* floating badge */
+    .cart-count-badge {
+      position: absolute; top: -6px; right: -8px;
+      background: #A8232A;
+      color: #fff;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.55rem;
+      font-weight: 700;
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0;
+      transition: opacity 0.2s, transform 0.2s;
+      transform: scale(0.5);
+    }
+    .cart-count-badge.visible { opacity: 1; transform: scale(1); }
+
+    /* Scroll progress bar */
+    #progress-bar {
+      position: fixed; top: 0; left: 0; height: 2px;
+      background: linear-gradient(90deg, #A8232A, #C68B59);
+      z-index: 9999; width: 0%;
+      transition: width 0.1s linear;
+    }
+
+    /* =========================================
+       RESPONSIVE HELPERS
+    ========================================= */
+    @media (max-width: 768px) {
+      .hide-card-img { height: 200px; }
+      .parallax-img-wrap { height: 340px; }
+      .maker-card-img { height: 240px; }
+      .product-card-img { height: 220px; }
+    }
+
+    /* Quote block */
+    .pull-quote {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.5rem, 3.5vw, 2.4rem);
+      font-weight: 300;
+      font-style: italic;
+      line-height: 1.5;
+      color: #FDFBF7;
+    }
+    .pull-quote span { color: #C68B59; }
+
+    /* Image reveal clip */
+    .img-reveal-wrap { overflow: hidden; }
+    .img-reveal-wrap img { transform-origin: center; }
+
+    /* notification toast */
+    #toast {
+      position: fixed; bottom: 2rem; left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #1A1410;
+      border: 1px solid rgba(198,139,89,0.35);
+      color: #FDFBF7;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 0.9rem 1.8rem;
+      z-index: 9999;
+      opacity: 0;
+      transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1), opacity 0.4s ease;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+    #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+    /* Shimmer loading bars */
+    .shimmer {
+      background: linear-gradient(90deg, rgba(198,139,89,0.05) 0%, rgba(198,139,89,0.12) 50%, rgba(198,139,89,0.05) 100%);
+      background-size: 200% 100%;
+      animation: shimmer 2s infinite;
+    }
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+  </style>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            charcoal: '#121212', parchment: '#FDFBF7',
+            red: '#A8232A', cognac: '#C68B59', espresso: '#2B1E16',
+          }
+        }
+      }
+    };
+  </script>
+</head>
+
+<body class="bg-charcoal text-parchment">
+
+  <!-- ============================================================
+       PROGRESS BAR
+  ============================================================ -->
+  <div id="progress-bar"></div>
+
+  <!-- ============================================================
+       CUSTOM CURSOR
+  ============================================================ -->
+
+
+  <!-- ============================================================
+       TOAST NOTIFICATION
+  ============================================================ -->
+  <div id="toast"></div>
+
+  <!-- ============================================================
+       NAVBAR
+  ============================================================ -->
+  <nav id="navbar" class="flex items-center justify-between">
+    <!-- Logo -->
+    <a href="#" class="footer-logo" style="font-size:1.4rem;">Tandy</a>
+
+    <!-- Desktop Nav Links -->
+    <div class="hidden md:flex items-center gap-8">
+      <a href="#hides"    class="nav-link">Hides</a>
+      <a href="#products" class="nav-link">Products</a>
+      <a href="#tools"    class="nav-link">Tools</a>
+      <a href="#makers"   class="nav-link">Makers</a>
+      <a href="#process"  class="nav-link">Craft</a>
+      <a href="#contact"  class="nav-link">Contact</a>
+    </div>
+
+    <!-- Right actions -->
+    <div class="flex items-center gap-5">
+      <button onclick="openCart()" style="background:none;border:none;cursor:pointer;position:relative;" aria-label="Cart">
+        <i class="fa fa-shopping-bag" style="color:#FDFBF7;font-size:1rem;"></i>
+        <span id="cart-badge" class="cart-count-badge">0</span>
+      </button>
+      <a href="#contact" class="btn-primary hidden md:inline-block" style="padding:0.55rem 1.4rem;font-size:0.6rem;">
+        <span>Shop Now</span>
+      </a>
+      <!-- Hamburger -->
+      <button id="menu-btn" class="md:hidden" style="background:none;border:none;cursor:pointer;" aria-label="Menu">
+        <i class="fa fa-bars" style="color:#FDFBF7;font-size:1.1rem;"></i>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ============================================================
+       MOBILE NAV BACKDROP + DRAWER
+  ============================================================ -->
+  <div id="mobile-nav-backdrop" onclick="closeMobileNav()"></div>
+  <div id="mobile-nav">
+    <div class="flex items-center justify-between mb-8">
+      <span class="footer-logo" style="font-size:1.2rem;">Tandy</span>
+      <button onclick="closeMobileNav()" style="background:none;border:none;color:#C68B59;font-size:1.1rem;cursor:pointer;">
+        <i class="fa fa-times"></i>
+      </button>
+    </div>
+    <a href="#hides"    class="mobile-nav-link" onclick="closeMobileNav()">Hides</a>
+    <a href="#products" class="mobile-nav-link" onclick="closeMobileNav()">Products</a>
+    <a href="#tools"    class="mobile-nav-link" onclick="closeMobileNav()">Tools</a>
+    <a href="#makers"   class="mobile-nav-link" onclick="closeMobileNav()">Makers</a>
+    <a href="#process"  class="mobile-nav-link" onclick="closeMobileNav()">Craft</a>
+    <a href="#contact"  class="mobile-nav-link" onclick="closeMobileNav()">Contact</a>
+    <div class="mt-8">
+      <button onclick="openCart();closeMobileNav();" class="btn-primary w-full text-center mt-4" style="display:block;">
+        <span>View Cart</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       CART BACKDROP + DRAWER
+  ============================================================ -->
+  <div id="cart-backdrop" onclick="closeCart()">
+    <div id="cart-drawer" onclick="event.stopPropagation()">
+      <div class="cart-header">
+        <h2 class="cart-title">Your Cart</h2>
+        <button class="cart-close" onclick="closeCart()"><i class="fa fa-times"></i></button>
+      </div>
+      <div id="cart-items">
+        <div class="empty-cart" id="empty-cart-msg">
+          <i class="fa fa-shopping-bag"></i>
+          <p style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:rgba(253,251,247,0.4);">Your cart is empty</p>
+          <p style="font-size:0.72rem;color:rgba(253,251,247,0.25);margin-top:0.4rem;font-family:'Inter',sans-serif;">Add some fine leathercraft to begin.</p>
+        </div>
+      </div>
+      <div id="cart-footer">
+        <div class="cart-total">
+          <span class="cart-total-label">Order Total</span>
+          <span class="cart-total-val" id="cart-total-val">$0.00</span>
+        </div>
+        <button class="btn-primary w-full" style="display:block;text-align:center;" onclick="checkoutToast()">
+          <span>Proceed to Checkout</span>
+        </button>
+        <p style="text-align:center;font-family:'Inter',sans-serif;font-size:0.65rem;color:rgba(253,251,247,0.3);margin-top:0.8rem;">
+          <i class="fa fa-lock" style="margin-right:4px;"></i> Secure checkout · Free shipping over $150
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       HIDE MODAL
+  ============================================================ -->
+  <div id="hide-modal-backdrop" onclick="closeHideModal()">
+    <div id="hide-modal" onclick="event.stopPropagation()">
+      <button class="modal-close" onclick="closeHideModal()"><i class="fa fa-times"></i></button>
+      <div id="hide-modal-content"></div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+  =====================  MAIN CONTENT  ==========================
+  ============================================================ -->
+  <main>
+
+    <!-- ============================================================
+         §1  HERO
+    ============================================================ -->
+    <section id="hero" class="leather-grain">
+      <div id="hero-bg"></div>
+      <div id="hero-overlay"></div>
+
+      <!-- Decorative ring -->
+      <div style="position:absolute;right:8%;bottom:15%;width:280px;height:280px;border:1px solid rgba(198,139,89,0.12);border-radius:50%;opacity:0;" id="hero-ring1"></div>
+      <div style="position:absolute;right:8%;bottom:15%;width:200px;height:200px;border:1px solid rgba(198,139,89,0.08);border-radius:50%;opacity:0;" id="hero-ring2"></div>
+
+      <!-- Content -->
+      <div class="relative z-10 max-w-7xl mx-auto px-6 w-full">
+        <div class="max-w-2xl" id="hero-content">
+          <div class="hero-badge will-animate" id="hero-badge">Est. 1879 · Heritage Leathercraft</div>
+          <h1 class="hero-title will-animate" id="hero-title">
+            Where<br /><em>Raw Hide</em><br />Becomes<br />Legacy.
+          </h1>
+          <div class="hero-divider will-animate" id="hero-div"></div>
+          <p class="hero-subtitle will-animate" id="hero-sub">
+            Premium veg-tan, chrome-tan, and exotic leathers alongside professional-grade tools for craftspeople who demand excellence.
+          </p>
+          <div class="flex flex-wrap gap-4 mt-8 will-animate" id="hero-btns">
+            <a href="#products" class="btn-primary"><span>Explore Collection</span></a>
+            <a href="#hides"    class="btn-outline">View Hides</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scroll Indicator -->
+      <div style="position:absolute;bottom:2.5rem;left:50%;transform:translateX(-50%);text-align:center;opacity:0;" id="hero-scroll">
+        <p style="font-family:'Montserrat',sans-serif;font-size:0.55rem;letter-spacing:0.3em;text-transform:uppercase;color:rgba(253,251,247,0.4);margin-bottom:0.6rem;">Scroll</p>
+        <div style="width:1px;height:40px;background:linear-gradient(to bottom,rgba(198,139,89,0.6),transparent);margin:0 auto;animation:scrollPulse 2s ease infinite;"></div>
+      </div>
+    </section>
+
+    <style>
+      @keyframes scrollPulse {
+        0%,100% { transform: scaleY(1); opacity: 0.6; }
+        50% { transform: scaleY(0.6); opacity: 0.2; }
+      }
+    </style>
+
+    <!-- ============================================================
+         §2  MARQUEE TICKER
+    ============================================================ -->
+    <div style="background:#0A0806;border-top:1px solid rgba(198,139,89,0.15);border-bottom:1px solid rgba(198,139,89,0.15);padding:0.9rem 0;overflow:hidden;">
+      <div class="marquee-track">
+        <!-- Duplicated for seamless loop -->
+        <span class="marquee-item">Veg-Tan Leather</span>
+        <span style="color:rgba(168,35,42,0.6);padding:0 0.5rem;">✦</span>
+        <span class="marquee-item">Chrome-Tanned Hides</span>
+        <span style="color:rgba(168,35,42,0.6);padding:0 0.5rem;">✦</span>
+        <span class="marquee-item">Exotic Skins</span>
+        <span style="color:rgba(168,35,42,0.6);padding:0 0.5rem;">✦</span>
+        <span class="marquee-item">Saddle Leather</span>
+        <span style="color:rgba(168,35,42,0.6);padding:0 0.5rem;">✦</span>
+        <span class="marquee-item">Professional Hand Tools</span>
+        <span style="color:rgba(168,35,42,0.6);padding:0 0.5rem;">✦</span>
+        <span class="marquee-item">Stamping & Carving Sets</span>
+        <span style="color:rgba(168,35,42,0.6);padding:0 0.5rem;">✦</span>
+        <span class="marquee-item">Maker Kits & Patterns</span>
+        <span style="color:rgba(168,35,42,0.6);padding:0 0.5rem;">✦</span>
+        <span class="marquee-item">Hardware & Findings</span>
+        <span style="color:rgba(168,35,42,0.6);padding:0 0.5rem;">✦</span>
+        <span class="marquee-item">Dyes & Finishes</span>
+        <span style="color:rgba(168,35,42,0.6);padding:0 0.5rem;">✦</span>
+        <span class="marquee-item">Veg-Tan Leather</span>
+        <span style="color:rgba(168,35,42,0.6);padding:0 0.5rem;">✦</span>
+        <span class="marquee-item">Chrome-Tanned Hides</span>
+        <span style="color:rgba(168,35,42,0.6);padding:0 0.5rem;">✦</span>
+        <span class="marquee-item">Exotic Skins</span>
+        <span style="color:rgba(168,35,42,0.6);padding:0 0.5rem;">✦</span>
+        <span class="marquee-item">Saddle Leather</span>
+        <span style="color:rgba(168,35,42,0.6);padding:0 0.5rem;">✦</span>
+        <span class="marquee-item">Professional Hand Tools</span>
+        <span style="color:rgba(168,35,42,0.6);padding:0 0.5rem;">✦</span>
+        <span class="marquee-item">Stamping & Carving Sets</span>
+        <span style="color:rgba(168,35,42,0.6);padding:0 0.5rem;">✦</span>
+        <span class="marquee-item">Maker Kits & Patterns</span>
+        <span style="color:rgba(168,35,42,0.6);padding:0 0.5rem;">✦</span>
+        <span class="marquee-item">Hardware & Findings</span>
+        <span style="color:rgba(168,35,42,0.6);padding:0 0.5rem;">✦</span>
+        <span class="marquee-item">Dyes & Finishes</span>
+        <span style="color:rgba(168,35,42,0.6);padding:0 0.5rem;">✦</span>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         §3  STATS
+    ============================================================ -->
+    <section style="background:#0F0C09;padding:5rem 1.5rem;" id="stats">
+      <div class="max-w-7xl mx-auto">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div class="text-center will-animate stat-block">
+            <div class="stat-num" id="stat-1">0</div>
+            <div class="stat-label">Years of Heritage</div>
+          </div>
+          <div class="text-center will-animate stat-block">
+            <div class="stat-num" id="stat-2">0</div>
+            <div class="stat-label">Premium Hide Grades</div>
+          </div>
+          <div class="text-center will-animate stat-block">
+            <div class="stat-num" id="stat-3">0</div>
+            <div class="stat-label">Artisan Makers Served</div>
+          </div>
+          <div class="text-center will-animate stat-block">
+            <div class="stat-num" id="stat-4">0</div>
+            <div class="stat-label">Hand Tools Curated</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="gold-line" style="max-width:900px;"></div>
+
+    <!-- ============================================================
+         §4  HIDE SELECTION
+    ============================================================ -->
+    <section id="hides" style="padding:7rem 1.5rem;background:#121212;">
+      <div class="max-w-7xl mx-auto">
+        <div class="text-center mb-16 will-animate" id="hides-header">
+          <p class="section-label">Premium Stock</p>
+          <h2 class="section-title">Select Your <em>Hide</em></h2>
+          <p style="font-family:'Inter',sans-serif;font-size:0.85rem;color:rgba(253,251,247,0.45);max-width:500px;margin:1.2rem auto 0;line-height:1.8;">
+            From classic full-grain vegetable tannage to buttery soft chrome-tan — every cut is graded, measured, and verified by our master tanners.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="hide-grid">
+
+          <!-- Veg-Tan -->
+          <div class="hide-card will-animate"
+               onclick="openHideModal('veg-tan')">
+            <div class="hide-badge">Full Grain</div>
+            <img class="hide-card-img"
+                 src="https://images.pexels.com/photos/17315572/pexels-photo-17315572.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=400&w=600"
+                 alt="Vegetable Tanned Leather" loading="lazy" />
+            <div class="hide-card-body">
+              <p class="hide-card-tag">Natural Tannage</p>
+              <h3 class="hide-card-name">Veg-Tan</h3>
+              <p class="hide-card-desc">Rich, firm body. Develops a gorgeous patina over time. The traditional choice for tooling and carving.</p>
+              <p style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:#C68B59;margin-top:1rem;font-weight:600;">From $4.20/sq ft</p>
+            </div>
+          </div>
+
+          <!-- Chrome-Tan -->
+          <div class="hide-card will-animate"
+               onclick="openHideModal('chrome-tan')">
+            <div class="hide-badge">Drum Dyed</div>
+            <img class="hide-card-img"
+                 src="https://images.pexels.com/photos/4452610/pexels-photo-4452610.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=400&w=600"
+                 alt="Chrome Tanned Leather" loading="lazy" />
+            <div class="hide-card-body">
+              <p class="hide-card-tag">Chrome Tannage</p>
+              <h3 class="hide-card-name">Chrome-Tan</h3>
+              <p class="hide-card-desc">Supple, water-resistant, and vibrant. Ideal for garments, accessories, and upholstery.</p>
+              <p style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:#C68B59;margin-top:1rem;font-weight:600;">From $3.60/sq ft</p>
+            </div>
+          </div>
+
+          <!-- Suede -->
+          <div class="hide-card will-animate"
+               onclick="openHideModal('suede')">
+            <div class="hide-badge">Split Hide</div>
+            <img class="hide-card-img"
+                 src="https://images.pexels.com/photos/33428341/pexels-photo-33428341.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=400&w=600"
+                 alt="Suede Leather" loading="lazy" />
+            <div class="hide-card-body">
+              <p class="hide-card-tag">Split Suede</p>
+              <h3 class="hide-card-name">Suede</h3>
+              <p class="hide-card-desc">Ultra-soft nap, exceptional drape. Perfect for linings, moccasins, and fashion applications.</p>
+              <p style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:#C68B59;margin-top:1rem;font-weight:600;">From $2.80/sq ft</p>
+            </div>
+          </div>
+
+          <!-- Exotic -->
+          <div class="hide-card will-animate"
+               onclick="openHideModal('exotic')">
+            <div class="hide-badge">Exotic Grade</div>
+            <img class="hide-card-img"
+                 src="https://images.pexels.com/photos/32076605/pexels-photo-32076605.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=400&w=600"
+                 alt="Exotic Leather" loading="lazy" />
+            <div class="hide-card-body">
+              <p class="hide-card-tag">Exotic Skins</p>
+              <h3 class="hide-card-name">Exotic</h3>
+              <p class="hide-card-desc">Python, stingray, ostrich & more — ethically sourced with CITES documentation for truly statement pieces.</p>
+              <p style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:#C68B59;margin-top:1rem;font-weight:600;">From $18.00/sq ft</p>
+            </div>
+          </div>
+        </div>
+
+        <p style="text-align:center;margin-top:2.5rem;font-family:'Montserrat',sans-serif;font-size:0.65rem;letter-spacing:0.15em;color:rgba(253,251,247,0.3);">
+          <i class="fa fa-mouse-pointer" style="margin-right:6px;color:#C68B59;"></i> Click any hide card to explore weight, grades, and best uses
+        </p>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         §5  PARALLAX BANNER #1
+    ============================================================ -->
+    <div class="parallax-img-wrap" id="parallax-1">
+      <img class="parallax-img" id="parallax-img-1"
+           src="https://images.pexels.com/photos/4452611/pexels-photo-4452611.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=900&w=1600"
+           alt="Leathercraft Tools" loading="lazy" />
+      <div class="parallax-caption">
+        <div>
+          <p class="section-label" style="margin-bottom:0.6rem;">Philosophy</p>
+          <blockquote class="pull-quote" style="max-width:580px;">
+            "The hand that shapes leather<br />shapes <span>history itself.</span>"
+          </blockquote>
+          <p style="font-family:'Montserrat',sans-serif;font-size:0.62rem;letter-spacing:0.2em;color:rgba(253,251,247,0.4);margin-top:1rem;">
+            — Elias Tanner, Founder, 1879
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         §6  PRODUCT SHOP
+    ============================================================ -->
+    <section id="products" style="padding:7rem 1.5rem;background:#0F0C09;">
+      <div class="max-w-7xl mx-auto">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 will-animate" id="shop-header">
+          <div>
+            <p class="section-label">The Collection</p>
+            <h2 class="section-title">Curated for <em>Makers</em></h2>
+          </div>
+          <!-- Filter Tabs -->
+          <div class="flex flex-wrap gap-2" id="filter-tabs">
+            <button class="filter-tab active" data-filter="all">All</button>
+            <button class="filter-tab" data-filter="leather">Leather</button>
+            <button class="filter-tab" data-filter="tools">Tools</button>
+            <button class="filter-tab" data-filter="kits">Kits</button>
+            <button class="filter-tab" data-filter="hardware">Hardware</button>
+          </div>
+        </div>
+
+        <!-- Product Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="product-grid">
+
+          <!-- Product 1 -->
+          <div class="product-item will-animate" data-category="leather">
+            <div class="product-card">
+              <span class="product-badge">Bestseller</span>
+              <div style="overflow:hidden;">
+                <img class="product-card-img"
+                     src="https://images.pexels.com/photos/17315572/pexels-photo-17315572.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=500&w=500"
+                     alt="Saddle Bend Side" loading="lazy" />
+              </div>
+              <div class="product-card-overlay">
+                <button class="add-to-cart-btn" onclick="addToCart('Saddle Bend Side', 64.99, 'https://images.pexels.com/photos/17315572/pexels-photo-17315572.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=100&w=100')">
+                  <i class="fa fa-plus" style="margin-right:6px;"></i> Add to Cart
+                </button>
+              </div>
+              <div class="product-info">
+                <p class="product-sub">Veg-Tan · 8–9 oz · Side</p>
+                <h3 class="product-name">Saddle Bend Side</h3>
+                <div class="flex items-center justify-between mt-2">
+                  <span class="product-price">$64.99</span>
+                  <button class="add-to-cart-btn" onclick="addToCart('Saddle Bend Side', 64.99, 'https://images.pexels.com/photos/17315572/pexels-photo-17315572.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=100&w=100')">
+                    <i class="fa fa-plus"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Product 2 -->
+          <div class="product-item will-animate" data-category="tools">
+            <div class="product-card">
+              <span class="product-badge" style="background:#2B1E16;border:1px solid rgba(198,139,89,0.4);color:#C68B59;">New</span>
+              <div style="overflow:hidden;">
+                <img class="product-card-img"
+                     src="https://images.pexels.com/photos/4452611/pexels-photo-4452611.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=500&w=500"
+                     alt="Pro Swivel Knife" loading="lazy" />
+              </div>
+              <div class="product-card-overlay">
+                <button class="add-to-cart-btn" onclick="addToCart('Pro Swivel Knife', 42.50, 'https://images.pexels.com/photos/4452611/pexels-photo-4452611.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=100&w=100')">
+                  <i class="fa fa-plus" style="margin-right:6px;"></i> Add to Cart
+                </button>
+              </div>
+              <div class="product-info">
+                <p class="product-sub">Stainless Steel · Ergonomic Grip</p>
+                <h3 class="product-name">Pro Swivel Knife</h3>
+                <div class="flex items-center justify-between mt-2">
+                  <span class="product-price">$42.50</span>
+                  <button class="add-to-cart-btn" onclick="addToCart('Pro Swivel Knife', 42.50, 'https://images.pexels.com/photos/4452611/pexels-photo-4452611.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=100&w=100')">
+                    <i class="fa fa-plus"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Product 3 -->
+          <div class="product-item will-animate" data-category="kits">
+            <div class="product-card">
+              <span class="product-badge">Popular</span>
+              <div style="overflow:hidden;">
+                <img class="product-card-img"
+                     src="https://images.pexels.com/photos/33428433/pexels-photo-33428433.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=500&w=500"
+                     alt="Wallet Maker Kit" loading="lazy" />
+              </div>
+              <div class="product-card-overlay">
+                <button class="add-to-cart-btn" onclick="addToCart('Wallet Maker Kit', 89.00, 'https://images.pexels.com/photos/33428433/pexels-photo-33428433.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=100&w=100')">
+                  <i class="fa fa-plus" style="margin-right:6px;"></i> Add to Cart
+                </button>
+              </div>
+              <div class="product-info">
+                <p class="product-sub">Complete Kit · Beginner Friendly</p>
+                <h3 class="product-name">Wallet Maker Kit</h3>
+                <div class="flex items-center justify-between mt-2">
+                  <span class="product-price">$89.00</span>
+                  <button class="add-to-cart-btn" onclick="addToCart('Wallet Maker Kit', 89.00, 'https://images.pexels.com/photos/33428433/pexels-photo-33428433.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=100&w=100')">
+                    <i class="fa fa-plus"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Product 4 -->
+          <div class="product-item will-animate" data-category="hardware">
+            <div class="product-card">
+              <div style="overflow:hidden;">
+                <img class="product-card-img"
+                     src="https://images.pexels.com/photos/6694716/pexels-photo-6694716.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=500&w=500"
+                     alt="Solid Brass Rivets" loading="lazy" />
+              </div>
+              <div class="product-card-overlay">
+                <button class="add-to-cart-btn" onclick="addToCart('Solid Brass Rivets 50pk', 18.75, 'https://images.pexels.com/photos/6694716/pexels-photo-6694716.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=100&w=100')">
+                  <i class="fa fa-plus" style="margin-right:6px;"></i> Add to Cart
+                </button>
+              </div>
+              <div class="product-info">
+                <p class="product-sub">Solid Brass · 9mm · 50-pack</p>
+                <h3 class="product-name">Brass Rivets 50pk</h3>
+                <div class="flex items-center justify-between mt-2">
+                  <span class="product-price">$18.75</span>
+                  <button class="add-to-cart-btn" onclick="addToCart('Solid Brass Rivets 50pk', 18.75, 'https://images.pexels.com/photos/6694716/pexels-photo-6694716.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=100&w=100')">
+                    <i class="fa fa-plus"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Product 5 -->
+          <div class="product-item will-animate" data-category="leather">
+            <div class="product-card">
+              <div style="overflow:hidden;">
+                <img class="product-card-img"
+                     src="https://images.pexels.com/photos/4452616/pexels-photo-4452616.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=500&w=500"
+                     alt="Chromexcel Bend" loading="lazy" />
+              </div>
+              <div class="product-card-overlay">
+                <button class="add-to-cart-btn" onclick="addToCart('Chromexcel Bend', 78.00, 'https://images.pexels.com/photos/4452616/pexels-photo-4452616.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=100&w=100')">
+                  <i class="fa fa-plus" style="margin-right:6px;"></i> Add to Cart
+                </button>
+              </div>
+              <div class="product-info">
+                <p class="product-sub">Horween · 4–5 oz · Pull-Up</p>
+                <h3 class="product-name">Chromexcel Bend</h3>
+                <div class="flex items-center justify-between mt-2">
+                  <span class="product-price">$78.00</span>
+                  <button class="add-to-cart-btn" onclick="addToCart('Chromexcel Bend', 78.00, 'https://images.pexels.com/photos/4452616/pexels-photo-4452616.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=100&w=100')">
+                    <i class="fa fa-plus"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Product 6 -->
+          <div class="product-item will-animate" data-category="tools">
+            <div class="product-card">
+              <div style="overflow:hidden;">
+                <img class="product-card-img"
+                     src="https://images.pexels.com/photos/37076982/pexels-photo-37076982.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=500&w=500"
+                     alt="Maul & Punch Set" loading="lazy" />
+              </div>
+              <div class="product-card-overlay">
+                <button class="add-to-cart-btn" onclick="addToCart('Rawhide Maul & Punch Set', 55.00, 'https://images.pexels.com/photos/37076982/pexels-photo-37076982.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=100&w=100')">
+                  <i class="fa fa-plus" style="margin-right:6px;"></i> Add to Cart
+                </button>
+              </div>
+              <div class="product-info">
+                <p class="product-sub">Rawhide Head · Hardwood Handle</p>
+                <h3 class="product-name">Maul & Punch Set</h3>
+                <div class="flex items-center justify-between mt-2">
+                  <span class="product-price">$55.00</span>
+                  <button class="add-to-cart-btn" onclick="addToCart('Rawhide Maul & Punch Set', 55.00, 'https://images.pexels.com/photos/37076982/pexels-photo-37076982.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=100&w=100')">
+                    <i class="fa fa-plus"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Product 7 -->
+          <div class="product-item will-animate" data-category="kits">
+            <div class="product-card">
+              <span class="product-badge">Gift Set</span>
+              <div style="overflow:hidden;">
+                <img class="product-card-img"
+                     src="https://images.pexels.com/photos/33428339/pexels-photo-33428339.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=500&w=500"
+                     alt="Belt Maker Kit" loading="lazy" />
+              </div>
+              <div class="product-card-overlay">
+                <button class="add-to-cart-btn" onclick="addToCart('Heritage Belt Kit', 119.00, 'https://images.pexels.com/photos/33428339/pexels-photo-33428339.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=100&w=100')">
+                  <i class="fa fa-plus" style="margin-right:6px;"></i> Add to Cart
+                </button>
+              </div>
+              <div class="product-info">
+                <p class="product-sub">Leather + Tools + Pattern</p>
+                <h3 class="product-name">Heritage Belt Kit</h3>
+                <div class="flex items-center justify-between mt-2">
+                  <span class="product-price">$119.00</span>
+                  <button class="add-to-cart-btn" onclick="addToCart('Heritage Belt Kit', 119.00, 'https://images.pexels.com/photos/33428339/pexels-photo-33428339.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=100&w=100')">
+                    <i class="fa fa-plus"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Product 8 -->
+          <div class="product-item will-animate" data-category="hardware">
+            <div class="product-card">
+              <div style="overflow:hidden;">
+                <img class="product-card-img"
+                     src="https://images.pexels.com/photos/6694707/pexels-photo-6694707.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=500&w=500"
+                     alt="Dee Rings & Snaps" loading="lazy" />
+              </div>
+              <div class="product-card-overlay">
+                <button class="add-to-cart-btn" onclick="addToCart('Antique Dee Rings & Snaps Kit', 24.95, 'https://images.pexels.com/photos/6694707/pexels-photo-6694707.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=100&w=100')">
+                  <i class="fa fa-plus" style="margin-right:6px;"></i> Add to Cart
+                </button>
+              </div>
+              <div class="product-info">
+                <p class="product-sub">Antique Brass · Mixed Sizes</p>
+                <h3 class="product-name">Dee Rings & Snaps Kit</h3>
+                <div class="flex items-center justify-between mt-2">
+                  <span class="product-price">$24.95</span>
+                  <button class="add-to-cart-btn" onclick="addToCart('Antique Dee Rings & Snaps Kit', 24.95, 'https://images.pexels.com/photos/6694707/pexels-photo-6694707.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=100&w=100')">
+                    <i class="fa fa-plus"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /product-grid -->
+      </div>
+    </section>
+
+    <!-- ============================================================
+         §7  PARALLAX BANNER #2
+    ============================================================ -->
+    <div class="parallax-img-wrap" id="parallax-2">
+      <img class="parallax-img" id="parallax-img-2"
+           src="https://images.pexels.com/photos/37443512/pexels-photo-37443512.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=900&w=1600"
+           alt="Artisan at work" loading="lazy" />
+      <div style="position:absolute;inset:0;background:linear-gradient(to left,rgba(18,18,18,0.8) 0%,transparent 60%);display:flex;align-items:center;justify-content:flex-end;padding:3rem;">
+        <div style="text-align:right;max-width:500px;">
+          <p class="section-label" style="margin-bottom:0.6rem;text-align:right;">The Craft</p>
+          <blockquote class="pull-quote">
+            "Every stitch, every cut —<br />a <span>conversation with time.</span>"
+          </blockquote>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         §8  TOOL CAROUSEL
+    ============================================================ -->
+    <section id="tools" style="padding:7rem 1.5rem;background:#121212;">
+      <div class="max-w-7xl mx-auto">
+        <div class="text-center mb-16 will-animate" id="tools-header">
+          <p class="section-label">Workshop Essentials</p>
+          <h2 class="section-title">Stamping & <em>Hand Tools</em></h2>
+          <p style="font-family:'Inter',sans-serif;font-size:0.85rem;color:rgba(253,251,247,0.45);max-width:460px;margin:1.2rem auto 0;line-height:1.8;">
+            Precision-crafted instruments built to serve decades of daily use. Hover any card for a tactile preview.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-5" id="tool-grid">
+
+          <div class="tool-card will-animate" id="tc-1">
+            <i class="fa fa-cut tool-icon"></i>
+            <h3 class="tool-name">Swivel Knife</h3>
+            <p class="tool-desc">Barrel-mounted blade for fluid, accurate line cutting on dampened leather.</p>
+            <p class="tool-price">$38.00</p>
+            <button class="add-to-cart-btn mt-4 w-full" onclick="addToCart('Swivel Knife', 38.00, '')">Add to Cart</button>
+          </div>
+
+          <div class="tool-card will-animate" id="tc-2">
+            <i class="fa fa-hammer tool-icon"></i>
+            <h3 class="tool-name">Rawhide Maul</h3>
+            <p class="tool-desc">Dense rawhide head absorbs shock; ideal for stamping and setting hardware.</p>
+            <p class="tool-price">$29.00</p>
+            <button class="add-to-cart-btn mt-4 w-full" onclick="addToCart('Rawhide Maul', 29.00, '')">Add to Cart</button>
+          </div>
+
+          <div class="tool-card will-animate" id="tc-3">
+            <i class="fa fa-stamp tool-icon"></i>
+            <h3 class="tool-name">Beveler Set</h3>
+            <p class="tool-desc">Twelve precision bevelers for crisp edges and shadowline definition in carved work.</p>
+            <p class="tool-price">$52.00</p>
+            <button class="add-to-cart-btn mt-4 w-full" onclick="addToCart('Beveler Set 12pc', 52.00, '')">Add to Cart</button>
+          </div>
+
+          <div class="tool-card will-animate" id="tc-4">
+            <i class="fa fa-ruler-combined tool-icon"></i>
+            <h3 class="tool-name">Edge Creaser</h3>
+            <p class="tool-desc">Steel-tipped creaser heats uniformly to set clean, professional grooves near leather edges.</p>
+            <p class="tool-price">$22.00</p>
+            <button class="add-to-cart-btn mt-4 w-full" onclick="addToCart('Edge Creaser', 22.00, '')">Add to Cart</button>
+          </div>
+
+          <div class="tool-card will-animate" id="tc-5">
+            <i class="fa fa-stitching tool-icon" style="font-size:2.4rem;"></i>
+            <h3 class="tool-name">Stitching Chisels</h3>
+            <p class="tool-desc">4-tine and 2-tine diamond pricking irons for consistent, elegant stitch holes.</p>
+            <p class="tool-price">$34.50</p>
+            <button class="add-to-cart-btn mt-4 w-full" onclick="addToCart('Stitching Chisels Set', 34.50, '')">Add to Cart</button>
+          </div>
+
+          <div class="tool-card will-animate" id="tc-6">
+            <i class="fa fa-circle-nodes tool-icon"></i>
+            <h3 class="tool-name">Hole Punch Set</h3>
+            <p class="tool-desc">Hardened steel punches in six diameters — 1.5mm to 6mm — for clean, precise penetration.</p>
+            <p class="tool-price">$27.00</p>
+            <button class="add-to-cart-btn mt-4 w-full" onclick="addToCart('Hole Punch Set 6pc', 27.00, '')">Add to Cart</button>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         §9  MAKER SPOTLIGHT
+    ============================================================ -->
+    <section id="makers" style="padding:7rem 1.5rem;background:#0A0806;">
+      <div class="max-w-7xl mx-auto">
+        <div class="text-center mb-16 will-animate" id="makers-header">
+          <p class="section-label">Community</p>
+          <h2 class="section-title">Maker <em>Spotlight</em></h2>
+          <p style="font-family:'Inter',sans-serif;font-size:0.85rem;color:rgba(253,251,247,0.45);max-width:480px;margin:1.2rem auto 0;line-height:1.8;">
+            A celebration of the artisans who turn our hides and tools into heirloom objects. Each piece, a life's work in miniature.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+
+          <div class="maker-card will-animate maker-stagger">
+            <div style="overflow:hidden;">
+              <img class="maker-card-img"
+                   src="https://images.pexels.com/photos/9744735/pexels-photo-9744735.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=500&w=500"
+                   alt="Maker: Small bags" loading="lazy" />
+            </div>
+            <div class="maker-card-info">
+              <p class="maker-name">Artisan Satchels</p>
+              <p class="maker-handle">@dawnofhide · Fort Worth, TX</p>
+              <p style="font-family:'Inter',sans-serif;font-size:0.75rem;color:rgba(253,251,247,0.4);margin-top:0.6rem;line-height:1.7;">
+                Hand-stitched messenger bags in 8 oz veg-tan with hand-carved floral tooling.
+              </p>
+              <div style="display:flex;gap:0.5rem;margin-top:0.8rem;">
+                <span style="font-family:'Montserrat',sans-serif;font-size:0.55rem;letter-spacing:0.15em;border:1px solid rgba(198,139,89,0.25);color:#C68B59;padding:0.2rem 0.6rem;">#VEGTAN</span>
+                <span style="font-family:'Montserrat',sans-serif;font-size:0.55rem;letter-spacing:0.15em;border:1px solid rgba(198,139,89,0.25);color:#C68B59;padding:0.2rem 0.6rem;">#TOOLING</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="maker-card will-animate maker-stagger">
+            <div style="overflow:hidden;">
+              <img class="maker-card-img"
+                   src="https://images.pexels.com/photos/25560249/pexels-photo-25560249.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=500&w=500"
+                   alt="Maker: Wallets" loading="lazy" />
+            </div>
+            <div class="maker-card-info">
+              <p class="maker-name">Bifold Collection</p>
+              <p class="maker-handle">@ravenstitch · Austin, TX</p>
+              <p style="font-family:'Inter',sans-serif;font-size:0.75rem;color:rgba(253,251,247,0.4);margin-top:0.6rem;line-height:1.7;">
+                Slim wallets using Chromexcel pull-up leather and natural linen thread saddle stitch.
+              </p>
+              <div style="display:flex;gap:0.5rem;margin-top:0.8rem;">
+                <span style="font-family:'Montserrat',sans-serif;font-size:0.55rem;letter-spacing:0.15em;border:1px solid rgba(198,139,89,0.25);color:#C68B59;padding:0.2rem 0.6rem;">#CHROMEXCEL</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="maker-card will-animate maker-stagger">
+            <div style="overflow:hidden;">
+              <img class="maker-card-img"
+                   src="https://images.pexels.com/photos/6653235/pexels-photo-6653235.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=500&w=500"
+                   alt="Maker: Workshop" loading="lazy" />
+            </div>
+            <div class="maker-card-info">
+              <p class="maker-name">Holster & Sheaths</p>
+              <p class="maker-handle">@ironhandcraft · Tucson, AZ</p>
+              <p style="font-family:'Inter',sans-serif;font-size:0.75rem;color:rgba(253,251,247,0.4);margin-top:0.6rem;line-height:1.7;">
+                Wet-molded OWB holsters and hunting sheaths in 9–10 oz Hermann Oak leather.
+              </p>
+              <div style="display:flex;gap:0.5rem;margin-top:0.8rem;">
+                <span style="font-family:'Montserrat',sans-serif;font-size:0.55rem;letter-spacing:0.15em;border:1px solid rgba(198,139,89,0.25);color:#C68B59;padding:0.2rem 0.6rem;">#WETMOLDED</span>
+                <span style="font-family:'Montserrat',sans-serif;font-size:0.55rem;letter-spacing:0.15em;border:1px solid rgba(198,139,89,0.25);color:#C68B59;padding:0.2rem 0.6rem;">#HOLSTER</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="maker-card will-animate maker-stagger">
+            <div style="overflow:hidden;">
+              <img class="maker-card-img"
+                   src="https://images.pexels.com/photos/31001381/pexels-photo-31001381.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=500&w=500"
+                   alt="Maker: Market goods" loading="lazy" />
+            </div>
+            <div class="maker-card-info">
+              <p class="maker-name">Market Collection</p>
+              <p class="maker-handle">@copperleafstudio · Nashville, TN</p>
+              <p style="font-family:'Inter',sans-serif;font-size:0.75rem;color:rgba(253,251,247,0.4);margin-top:0.6rem;line-height:1.7;">
+                Colourful dyed market bags and coin purses combining suede and chrome-tan panels.
+              </p>
+              <div style="display:flex;gap:0.5rem;margin-top:0.8rem;">
+                <span style="font-family:'Montserrat',sans-serif;font-size:0.55rem;letter-spacing:0.15em;border:1px solid rgba(198,139,89,0.25);color:#C68B59;padding:0.2rem 0.6rem;">#SUEDE</span>
+                <span style="font-family:'Montserrat',sans-serif;font-size:0.55rem;letter-spacing:0.15em;border:1px solid rgba(198,139,89,0.25);color:#C68B59;padding:0.2rem 0.6rem;">#DYED</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- CTA -->
+        <div class="text-center mt-14 will-animate" id="makers-cta">
+          <p style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:rgba(253,251,247,0.5);margin-bottom:1.5rem;">
+            Are you a maker? Tag us <span style="color:#C68B59;">@tanneryandco</span> for a chance to be featured.
+          </p>
+          <a href="#contact" class="btn-outline">Submit Your Work</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         §10  CRAFT PROCESS
+    ============================================================ -->
+    <section id="process" style="padding:7rem 1.5rem;background:#0F0C09;">
+      <div class="max-w-7xl mx-auto">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+
+          <!-- Left: Image -->
+          <div class="img-reveal-wrap will-animate" id="process-img-wrap">
+            <img src="https://images.pexels.com/photos/33428417/pexels-photo-33428417.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=700&w=700"
+                 alt="Artisan at work"
+                 style="width:100%;height:580px;object-fit:cover;display:block;" loading="lazy" />
+            <div style="position:absolute;bottom:-1.5rem;right:-1.5rem;width:120px;height:120px;border:1px solid rgba(198,139,89,0.2);background:#1A1410;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:1rem;">
+              <span style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;color:#C68B59;line-height:1;">145</span>
+              <span style="font-family:'Montserrat',sans-serif;font-size:0.5rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(253,251,247,0.4);margin-top:0.3rem;">Years Trusted</span>
+            </div>
+          </div>
+
+          <!-- Right: Steps -->
+          <div>
+            <p class="section-label will-animate" id="proc-label">Heritage Process</p>
+            <h2 class="section-title will-animate mb-12" id="proc-title">How We <em>Craft</em><br />Excellence</h2>
+
+            <div class="flex flex-col gap-10">
+
+              <div class="process-step will-animate">
+                <div class="step-line"></div>
+                <span class="step-num">01</span>
+                <h4 class="step-title">Select & Grade the Hide</h4>
+                <p class="step-desc">Each side is hand-inspected by our master tanner, graded for consistency, thickness, and fiber tightness before entering inventory.</p>
+              </div>
+
+              <div class="process-step will-animate">
+                <div class="step-line"></div>
+                <span class="step-num">02</span>
+                <h4 class="step-title">Traditional Tannage</h4>
+                <p class="step-desc">Vegetable tanning uses bark, oak gall, and sumac — a 6-week process that creates unparalleled firmness and future patina.</p>
+              </div>
+
+              <div class="process-step will-animate">
+                <span class="step-num">03</span>
+                <h4 class="step-title">Measure, Cut & Ship</h4>
+                <p class="step-desc">Hides are measured precisely, wrapped in kraft paper, and shipped within 48 hours in climate-controlled packaging to preserve quality.</p>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         §11  NEWSLETTER / CONTACT
+    ============================================================ -->
+    <section id="contact" style="padding:7rem 1.5rem;background:#121212;">
+      <div class="max-w-5xl mx-auto">
+        <div class="newsletter-wrap" style="padding:4rem 3rem;text-align:center;" id="newsletter-block">
+          <p class="section-label will-animate">Join the Craft</p>
+          <h2 class="section-title will-animate mb-4">Get 10% Off Your <em>First Order</em></h2>
+          <p style="font-family:'Inter',sans-serif;font-size:0.85rem;color:rgba(253,251,247,0.45);max-width:440px;margin:0 auto 2.5rem;line-height:1.8;" class="will-animate">
+            Subscribe to the Tandy newsletter for drop alerts, technique guides, and exclusive member pricing.
+          </p>
+          <form class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto will-animate" onsubmit="handleNewsletter(event)" id="newsletter-form">
+            <input class="newsletter-input flex-1" type="email" placeholder="your@email.com" required />
+            <button type="submit" class="btn-primary" style="white-space:nowrap;"><span>Subscribe</span></button>
+          </form>
+          <p style="font-family:'Inter',sans-serif;font-size:0.65rem;color:rgba(253,251,247,0.25);margin-top:1rem;" class="will-animate">
+            No spam. Unsubscribe at any time. Your privacy is sacred.
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============================================================
+       FOOTER
+  ============================================================ -->
+  <footer style="padding:4rem 1.5rem 2rem;">
+    <div class="max-w-7xl mx-auto">
+      <div class="gold-line mb-12" style="max-width:100%;"></div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
+
+        <!-- Brand -->
+        <div>
+          <div class="footer-logo mb-4">Tandy</div>
+          <p style="font-family:'Cormorant Garamond',serif;font-size:1rem;color:rgba(253,251,247,0.4);line-height:1.8;margin-bottom:1.5rem;">
+            Premium heritage leathercraft since 1879. Supplying the world's finest tannages and tools to makers who demand the extraordinary.
+          </p>
+          <div class="flex gap-3">
+            <a href="#" class="social-btn"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="social-btn"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="social-btn"><i class="fab fa-youtube"></i></a>
+            <a href="#" class="social-btn"><i class="fab fa-pinterest-p"></i></a>
+          </div>
+        </div>
+
+        <!-- Shop -->
+        <div>
+          <p style="font-family:'Montserrat',sans-serif;font-size:0.65rem;letter-spacing:0.25em;text-transform:uppercase;color:#C68B59;margin-bottom:1.2rem;">Shop</p>
+          <a href="#" class="footer-link">Full-Grain Hides</a>
+          <a href="#" class="footer-link">Tools & Equipment</a>
+          <a href="#" class="footer-link">Starter Kits</a>
+          <a href="#" class="footer-link">Dyes & Finishes</a>
+          <a href="#" class="footer-link">Hardware & Findings</a>
+          <a href="#" class="footer-link">Patterns & Templates</a>
+        </div>
+
+        <!-- Learn -->
+        <div>
+          <p style="font-family:'Montserrat',sans-serif;font-size:0.65rem;letter-spacing:0.25em;text-transform:uppercase;color:#C68B59;margin-bottom:1.2rem;">Learn</p>
+          <a href="#" class="footer-link">Leathercraft 101</a>
+          <a href="#" class="footer-link">Tool Guide</a>
+          <a href="#" class="footer-link">Finishing & Dyeing</a>
+          <a href="#" class="footer-link">Hide Grading Chart</a>
+          <a href="#" class="footer-link">Video Tutorials</a>
+          <a href="#" class="footer-link">Maker Community</a>
+        </div>
+
+        <!-- Contact -->
+        <div>
+          <p style="font-family:'Montserrat',sans-serif;font-size:0.65rem;letter-spacing:0.25em;text-transform:uppercase;color:#C68B59;margin-bottom:1.2rem;">Contact</p>
+          <p style="font-family:'Inter',sans-serif;font-size:0.78rem;color:rgba(253,251,247,0.4);line-height:1.9;">
+            <i class="fa fa-map-marker-alt" style="color:#C68B59;margin-right:8px;"></i>2401 Jacksboro Hwy<br />Fort Worth, TX 76114<br /><br />
+            <i class="fa fa-phone" style="color:#C68B59;margin-right:8px;"></i>1-800-433-3201<br /><br />
+            <i class="fa fa-envelope" style="color:#C68B59;margin-right:8px;"></i>hello@tanneryandco.com
+          </p>
+          <div style="margin-top:1.2rem;display:flex;align-items:center;gap:0.5rem;">
+            <i class="fa fa-shield-alt" style="color:rgba(198,139,89,0.5);font-size:0.8rem;"></i>
+            <span style="font-family:'Inter',sans-serif;font-size:0.68rem;color:rgba(253,251,247,0.3);">Secure SSL · PCI Compliant</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="gold-line mb-6" style="max-width:100%;"></div>
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+        <p style="font-family:'Inter',sans-serif;font-size:0.68rem;color:rgba(253,251,247,0.25);">
+          © 2024 Tandy All rights reserved. Crafted with passion in Fort Worth, TX.
+        </p>
+        <div class="flex gap-5">
+          <a href="#" style="font-family:'Inter',sans-serif;font-size:0.68rem;color:rgba(253,251,247,0.25);text-decoration:none;transition:color 0.3s;" onmouseover="this.style.color='#C68B59'" onmouseout="this.style.color='rgba(253,251,247,0.25)'">Privacy Policy</a>
+          <a href="#" style="font-family:'Inter',sans-serif;font-size:0.68rem;color:rgba(253,251,247,0.25);text-decoration:none;transition:color 0.3s;" onmouseover="this.style.color='#C68B59'" onmouseout="this.style.color='rgba(253,251,247,0.25)'">Terms of Use</a>
+          <a href="#" style="font-family:'Inter',sans-serif;font-size:0.68rem;color:rgba(253,251,247,0.25);text-decoration:none;transition:color 0.3s;" onmouseover="this.style.color='#C68B59'" onmouseout="this.style.color='rgba(253,251,247,0.25)'">Returns</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============================================================
+       JAVASCRIPT
+  ============================================================ -->
+  <script>
+
+
+    /* ============================================================
+       2. SCROLL PROGRESS BAR
+    ============================================================ */
+    const progressBar = document.getElementById('progress-bar');
+    window.addEventListener('scroll', () => {
+      const scrollTop  = window.scrollY;
+      const docHeight  = document.body.scrollHeight - window.innerHeight;
+      const pct        = (scrollTop / docHeight) * 100;
+      progressBar.style.width = pct + '%';
+    });
+
+    /* ============================================================
+       3. NAVBAR SCROLL EFFECT
+    ============================================================ */
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 60) navbar.classList.add('scrolled');
+      else navbar.classList.remove('scrolled');
+    });
+
+    /* ============================================================
+       4. MOBILE NAV
+    ============================================================ */
+    const mobileNav        = document.getElementById('mobile-nav');
+    const mobileNavBackdrop = document.getElementById('mobile-nav-backdrop');
+    document.getElementById('menu-btn').addEventListener('click', () => {
+      mobileNav.classList.add('open');
+      mobileNavBackdrop.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    });
+    function closeMobileNav() {
+      mobileNav.classList.remove('open');
+      mobileNavBackdrop.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    /* ============================================================
+       5. CART — localStorage backed
+    ============================================================ */
+    let cart = JSON.parse(localStorage.getItem('tannery_cart') || '[]');
+
+    function saveCart() { localStorage.setItem('tannery_cart', JSON.stringify(cart)); }
+
+    function openCart() {
+      document.getElementById('cart-backdrop').classList.add('open');
+      document.body.style.overflow = 'hidden';
+      renderCart();
+    }
+    function closeCart() {
+      document.getElementById('cart-backdrop').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    function addToCart(name, price, img) {
+      const existing = cart.find(i => i.name === name);
+      if (existing) {
+        existing.qty = (existing.qty || 1) + 1;
+      } else {
+        cart.push({ name, price, img, qty: 1 });
+      }
+      saveCart();
+      updateCartBadge();
+      renderCart();
+      showToast(`"${name}" added to cart`);
+    }
+
+    function removeFromCart(name) {
+      cart = cart.filter(i => i.name !== name);
+      saveCart();
+      updateCartBadge();
+      renderCart();
+    }
+
+    function updateCartBadge() {
+      const badge = document.getElementById('cart-badge');
+      const total = cart.reduce((s, i) => s + (i.qty || 1), 0);
+      badge.textContent = total;
+      if (total > 0) badge.classList.add('visible');
+      else badge.classList.remove('visible');
+    }
+
+    function renderCart() {
+      const container = document.getElementById('cart-items');
+      const empty     = document.getElementById('empty-cart-msg');
+      const totalEl   = document.getElementById('cart-total-val');
+
+      container.querySelectorAll('.cart-item').forEach(el => el.remove());
+
+      if (cart.length === 0) {
+        empty.style.display = 'block';
+        totalEl.textContent = '$0.00';
+        return;
+      }
+      empty.style.display = 'none';
+
+      let total = 0;
+      cart.forEach(item => {
+        const qty = item.qty || 1;
+        total += item.price * qty;
+        const div = document.createElement('div');
+        div.className = 'cart-item';
+        div.innerHTML = `
+          ${item.img ? `<img class="cart-item-img" src="${item.img}" alt="${item.name}" />` : `<div class="cart-item-img shimmer" style="background:#2B1E16;"></div>`}
+          <div style="flex:1;">
+            <p class="cart-item-name">${item.name}</p>
+            <p class="cart-item-price">$${item.price.toFixed(2)} × ${qty}</p>
+          </div>
+          <button class="cart-item-remove" onclick="removeFromCart('${item.name.replace(/'/g,"\\'")}')">
+            <i class="fa fa-trash-alt"></i>
+          </button>`;
+        container.appendChild(div);
+      });
+
+      totalEl.textContent = '$' + total.toFixed(2);
+    }
+
+    function checkoutToast() {
+      showToast('Redirecting to secure checkout...');
+      setTimeout(closeCart, 1200);
+    }
+
+    // initialise badge
+    updateCartBadge();
+
+    /* ============================================================
+       6. TOAST NOTIFICATION
+    ============================================================ */
+    let toastTimer;
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+    }
+
+    /* ============================================================
+       7. PRODUCT FILTER TABS
+    ============================================================ */
+    document.querySelectorAll('.filter-tab').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const filter = btn.dataset.filter;
+
+        document.querySelectorAll('.product-item').forEach(item => {
+          const cat = item.dataset.category;
+          if (filter === 'all' || cat === filter) {
+            item.classList.remove('hidden');
+            gsap.fromTo(item, { opacity: 0, y: 20, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: 0.45, ease: 'power2.out' });
+          } else {
+            gsap.to(item, { opacity: 0, scale: 0.95, duration: 0.25, ease: 'power2.in', onComplete: () => item.classList.add('hidden') });
+          }
+        });
+      });
+    });
+
+    /* ============================================================
+       8. HIDE MODAL DATA
+    ============================================================ */
+    const hideData = {
+      'veg-tan': {
+        tag: 'Vegetable Tannage · Full Grain',
+        name: 'Vegetable-Tanned Leather',
+        img: 'https://images.pexels.com/photos/17315572/pexels-photo-17315572.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=400&w=700',
+        description: `Vegetable tanning is one of the world's oldest leatherworking processes, using bark extracts from oak, chestnut, and quebracho trees. The result is a firm, dense leather that accepts tooling and carving with unmatched precision. Over years of use, it develops a rich, deep patina — growing darker and more beautiful with every touch. Ideal for belts, saddles, holsters, carved wallets, and any project where structural integrity matters.`,
+        stats: [
+          { val: '4–12oz', lbl: 'Available Weights' },
+          { val: '6wks', lbl: 'Traditional Tan Time' },
+          { val: 'A–C', lbl: 'Grade Range' },
+          { val: '100%', lbl: 'Natural Tannage' },
+        ],
+        uses: ['Holsters', 'Belts', 'Saddles', 'Carved Wallets', 'Sheaths', 'Watch Straps', 'Guitar Straps'],
+        price: 'From $4.20 / sq ft'
+      },
+      'chrome-tan': {
+        tag: 'Chrome Tannage · Drum Dyed',
+        name: 'Chrome-Tanned Leather',
+        img: 'https://images.pexels.com/photos/4452610/pexels-photo-4452610.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=400&w=700',
+        description: `Chrome tanning uses chromium salts to produce a leather that is noticeably softer, more supple, and water-resistant than its vegetable-tanned counterpart. The process takes hours rather than weeks, allowing for consistent colour penetration through drum dyeing. An excellent choice for garments, linings, upholstery, and fashion accessories where drape and softness are paramount.`,
+        stats: [
+          { val: '2–6oz', lbl: 'Available Weights' },
+          { val: '24hrs', lbl: 'Chrome Tan Time' },
+          { val: 'A–B', lbl: 'Grade Range' },
+          { val: 'CR3+', lbl: 'Chrome Salt Type' },
+        ],
+        uses: ['Garments', 'Bags', 'Upholstery', 'Shoe Upper', 'Linings', 'Gloves', 'Jacket Panels'],
+        price: 'From $3.60 / sq ft'
+      },
+      'suede': {
+        tag: 'Split Hide · Napped Finish',
+        name: 'Premium Suede',
+        img: 'https://images.pexels.com/photos/33428341/pexels-photo-33428341.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=400&w=700',
+        description: `Suede is produced from the split inner layer of the hide, then mechanically buffed to create a consistent, velvety nap. It is prized for its extraordinary softness, exceptional drape, and rich depth of colour. While less durable than full-grain leather on its own, suede serves superbly as lining material, in layered constructions, or for fashion and lifestyle applications.`,
+        stats: [
+          { val: '1–3oz', lbl: 'Available Weights' },
+          { val: 'Split', lbl: 'Hide Layer' },
+          { val: 'AAA', lbl: 'Nap Consistency' },
+          { val: '8+', lbl: 'Colour Options' },
+        ],
+        uses: ['Linings', 'Moccasins', 'Pouches', 'Fashion Tops', 'Book Covers', 'Upholstery Accents'],
+        price: 'From $2.80 / sq ft'
+      },
+      'exotic': {
+        tag: 'CITES Documented · Ethically Sourced',
+        name: 'Exotic Skins',
+        img: 'https://images.pexels.com/photos/32076605/pexels-photo-32076605.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=400&w=700',
+        description: `Our exotic skin collection includes genuine python, reticulated stingray (shagreen), ostrich quill, and caiman belly — all sourced from CITES-certified farms and tanneries with full provenance documentation. Each skin is hand-inspected for pattern clarity, scale uniformity, and tannage quality. These are the materials of haute couture and heirloom statement pieces.`,
+        stats: [
+          { val: '4+', lbl: 'Species Available' },
+          { val: 'CITES', lbl: 'Certification' },
+          { val: 'Ltd', lbl: 'Seasonal Availability' },
+          { val: '≥A', lbl: 'Min Grade Stocked' },
+        ],
+        uses: ['Luxury Wallets', 'Watch Straps', 'Clutch Bags', 'Belt Accents', 'Shoes', 'Jewellery Boxes'],
+        price: 'From $18.00 / sq ft'
+      },
+    };
+
+    function openHideModal(id) {
+      const data    = hideData[id];
+      const content = document.getElementById('hide-modal-content');
+      content.innerHTML = `
+        <img src="${data.img}" alt="${data.name}" style="width:100%;height:260px;object-fit:cover;display:block;" />
+        <div style="padding:2.5rem;">
+          <p style="font-family:'Montserrat',sans-serif;font-size:0.6rem;letter-spacing:0.25em;text-transform:uppercase;color:#C68B59;margin-bottom:0.5rem;">${data.tag}</p>
+          <h2 style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;color:#FDFBF7;margin-bottom:1.2rem;">${data.name}</h2>
+          <p style="font-family:'Inter',sans-serif;font-size:0.82rem;color:rgba(253,251,247,0.55);line-height:1.9;margin-bottom:2rem;">${data.description}</p>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.8rem;margin-bottom:2rem;">
+            ${data.stats.map(s => `
+              <div class="modal-stat">
+                <div class="modal-stat-val">${s.val}</div>
+                <div class="modal-stat-lbl">${s.lbl}</div>
+              </div>`).join('')}
+          </div>
+          <p style="font-family:'Montserrat',sans-serif;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:rgba(253,251,247,0.4);margin-bottom:0.8rem;">Best For</p>
+          <div style="margin-bottom:2rem;">${data.uses.map(u => `<span class="use-tag">${u}</span>`).join('')}</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+            <span style="font-family:'Cormorant Garamond',serif;font-size:1.8rem;color:#C68B59;font-weight:600;">${data.price}</span>
+            <button class="btn-primary" onclick="addToCart('${data.name}', 64.99, '${data.img}');closeHideModal();"><span>Add to Cart</span></button>
+          </div>
+        </div>`;
+      document.getElementById('hide-modal-backdrop').classList.add('open');
+      document.body.style.overflow = 'hidden';
+
+      // Animate stats
+      gsap.fromTo(content.querySelectorAll('.modal-stat'),
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 0.5, stagger: 0.08, delay: 0.25, ease: 'power2.out' }
+      );
+    }
+
+    function closeHideModal() {
+      document.getElementById('hide-modal-backdrop').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    /* ============================================================
+       9. NEWSLETTER FORM
+    ============================================================ */
+    function handleNewsletter(e) {
+      e.preventDefault();
+      const btn  = e.target.querySelector('button');
+      btn.innerHTML = '<span><i class="fa fa-check" style="margin-right:6px;"></i>Subscribed!</span>';
+      btn.style.background = '#1A6B2A';
+      showToast('Welcome to the Tandy community!');
+      setTimeout(() => {
+        btn.innerHTML = '<span>Subscribe</span>';
+        btn.style.background = '';
+        e.target.reset();
+      }, 4000);
+    }
+
+    /* ============================================================
+       10. 3D TILT EFFECT FOR TOOL CARDS
+    ============================================================ */
+    document.querySelectorAll('.tool-card').forEach(card => {
+      card.addEventListener('mousemove', e => {
+        const rect   = card.getBoundingClientRect();
+        const x      = e.clientX - rect.left;
+        const y      = e.clientY - rect.top;
+        const cx     = rect.width  / 2;
+        const cy     = rect.height / 2;
+        const rotY   = ((x - cx) / cx) * 12;
+        const rotX   = -((y - cy) / cy) * 12;
+        card.style.transform = `perspective(600px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale(1.03)`;
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = 'perspective(600px) rotateX(0deg) rotateY(0deg) scale(1)';
+        card.style.transition = 'transform 0.5s ease';
+      });
+      card.addEventListener('mouseenter', () => {
+        card.style.transition = 'transform 0.1s ease, border-color 0.3s ease, box-shadow 0.3s ease';
+      });
+    });
+
+    /* ============================================================
+       11. GSAP ANIMATIONS
+    ============================================================ */
+
+    // Mark body so CSS removes the !important visibility overrides,
+    // letting GSAP control opacity/transform from here on.
+    document.body.classList.add('gsap-ready');
+
+    // Hard failsafe: if anything is still invisible after 4s, force it visible.
+    setTimeout(() => {
+      const selectors = [
+        '.stat-block','#hides-header','#hide-grid .hide-card',
+        '#parallax-1 .parallax-caption > div','#parallax-2 > div > div',
+        '#shop-header','#product-grid .product-item',
+        '#tools-header','#tool-grid .tool-card',
+        '#makers-header','.maker-stagger','#makers-cta',
+        '#process-img-wrap','#proc-label','#proc-title','.process-step',
+        '#newsletter-block > *','.gold-line'
+      ];
+      selectors.forEach(sel => {
+        document.querySelectorAll(sel).forEach(el => {
+          if (parseFloat(getComputedStyle(el).opacity) < 0.1) {
+            el.style.opacity = '1';
+            el.style.transform = 'none';
+          }
+        });
+      });
+    }, 4000);
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    // --- Hero Entrance ---
+    const heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+    heroTl
+      .fromTo('#hero-bg',    { scale: 1.12 }, { scale: 1, duration: 2.2 }, 0)
+      .fromTo('#hero-badge', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.9 }, 0.5)
+      .fromTo('#hero-title', { opacity: 0, y: 50, clipPath: 'inset(0 0 100% 0)' }, { opacity: 1, y: 0, clipPath: 'inset(0 0 0% 0)', duration: 1.1 }, 0.75)
+      .fromTo('#hero-div',   { opacity: 0, scaleX: 0, transformOrigin: 'left' }, { opacity: 1, scaleX: 1, duration: 0.7 }, 1.2)
+      .fromTo('#hero-sub',   { opacity: 0, y: 25 }, { opacity: 1, y: 0, duration: 0.85 }, 1.35)
+      .fromTo('#hero-btns',  { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.75 }, 1.55)
+      .fromTo('#hero-scroll',{ opacity: 0 }, { opacity: 1, duration: 0.8 }, 1.9)
+      .fromTo(['#hero-ring1','#hero-ring2'], { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 1.4, stagger: 0.3, ease: 'elastic.out(1,0.6)' }, 1.0);
+
+    // --- Hero Parallax on Scroll ---
+    gsap.to('#hero-bg', {
+      yPercent: 30,
+      ease: 'none',
+      scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: true }
+    });
+
+    // --- Stats Counter Animation ---
+    const statTargets = [145, 48, 12000, 320];
+    const statIds     = ['stat-1','stat-2','stat-3','stat-4'];
+    const statSuffixes = ['', '', '+', '+'];
+
+    gsap.from('.stat-block', {
+      opacity: 0, y: 40, duration: 0.8, stagger: 0.15,
+      scrollTrigger: { trigger: '#stats', start: 'top 75%', once: true,
+        onEnter: () => {
+          statIds.forEach((id, i) => {
+            const el = document.getElementById(id);
+            let count = 0;
+            const target = statTargets[i];
+            const step   = Math.ceil(target / 60);
+            const timer  = setInterval(() => {
+              count = Math.min(count + step, target);
+              el.textContent = (count >= 1000 ? (count / 1000).toFixed(0) + 'k' : count) + statSuffixes[i];
+              if (count >= target) clearInterval(timer);
+            }, 25);
+          });
+        }
+      }
+    });
+
+    // --- Hides Header ---
+    gsap.from('#hides-header', {
+      opacity: 0, y: 50, duration: 0.9,
+      scrollTrigger: { trigger: '#hides-header', start: 'top 80%', once: true }
+    });
+
+    // --- Hide Cards Stagger ---
+    gsap.from('#hide-grid .hide-card', {
+      opacity: 0, y: 60, duration: 0.85, stagger: 0.15,
+      scrollTrigger: { trigger: '#hide-grid', start: 'top 78%', once: true }
+    });
+
+    // --- Parallax Image 1 ---
+    gsap.to('#parallax-img-1', {
+      yPercent: -18,
+      ease: 'none',
+      scrollTrigger: { trigger: '#parallax-1', start: 'top bottom', end: 'bottom top', scrub: 1.5 }
+    });
+    gsap.from('#parallax-1 .parallax-caption > div', {
+      opacity: 0, x: -50, duration: 1,
+      scrollTrigger: { trigger: '#parallax-1', start: 'top 70%', once: true }
+    });
+
+    // --- Parallax Image 2 ---
+    gsap.to('#parallax-img-2', {
+      yPercent: -18,
+      ease: 'none',
+      scrollTrigger: { trigger: '#parallax-2', start: 'top bottom', end: 'bottom top', scrub: 1.5 }
+    });
+    gsap.from('#parallax-2 > div > div', {
+      opacity: 0, x: 50, duration: 1,
+      scrollTrigger: { trigger: '#parallax-2', start: 'top 70%', once: true }
+    });
+
+    // --- Shop Header ---
+    gsap.from('#shop-header', {
+      opacity: 0, y: 40, duration: 0.9,
+      scrollTrigger: { trigger: '#shop-header', start: 'top 80%', once: true }
+    });
+
+    // --- Product Cards Stagger ---
+    gsap.from('#product-grid .product-item', {
+      opacity: 0, y: 70, duration: 0.9, stagger: 0.1,
+      scrollTrigger: { trigger: '#product-grid', start: 'top 78%', once: true }
+    });
+
+    // --- Tools Header ---
+    gsap.from('#tools-header', {
+      opacity: 0, y: 40, duration: 0.9,
+      scrollTrigger: { trigger: '#tools-header', start: 'top 80%', once: true }
+    });
+
+    // --- Tool Cards Stagger ---
+    gsap.from('#tool-grid .tool-card', {
+      opacity: 0, y: 50, scale: 0.92, duration: 0.8, stagger: 0.12,
+      scrollTrigger: { trigger: '#tool-grid', start: 'top 80%', once: true }
+    });
+
+    // --- Makers Header ---
+    gsap.from('#makers-header', {
+      opacity: 0, y: 40, duration: 0.9,
+      scrollTrigger: { trigger: '#makers-header', start: 'top 80%', once: true }
+    });
+
+    // --- Maker Cards Stagger ---
+    gsap.from('.maker-stagger', {
+      opacity: 0, y: 80, duration: 1, stagger: 0.18,
+      scrollTrigger: { trigger: '.maker-stagger', start: 'top 78%', once: true }
+    });
+
+    // --- Makers CTA ---
+    gsap.from('#makers-cta', {
+      opacity: 0, y: 30, duration: 0.9,
+      scrollTrigger: { trigger: '#makers-cta', start: 'top 85%', once: true }
+    });
+
+    // --- Process Section ---
+    gsap.from('#process-img-wrap', {
+      opacity: 0, x: -60, duration: 1.1,
+      scrollTrigger: { trigger: '#process-img-wrap', start: 'top 75%', once: true }
+    });
+    gsap.from('#proc-label, #proc-title', {
+      opacity: 0, y: 30, duration: 0.85, stagger: 0.2,
+      scrollTrigger: { trigger: '#proc-label', start: 'top 80%', once: true }
+    });
+    gsap.from('.process-step', {
+      opacity: 0, x: 50, duration: 0.85, stagger: 0.2,
+      scrollTrigger: { trigger: '.process-step', start: 'top 80%', once: true }
+    });
+
+    // --- Newsletter ---
+    gsap.from('#newsletter-block > *', {
+      opacity: 0, y: 40, duration: 0.8, stagger: 0.12,
+      scrollTrigger: { trigger: '#newsletter-block', start: 'top 78%', once: true }
+    });
+
+    // --- Generic will-animate fallback ---
+    document.querySelectorAll('.will-animate').forEach(el => {
+      if (getComputedStyle(el).opacity === '0') {
+        gsap.to(el, {
+          opacity: 1, duration: 0.01,
+          scrollTrigger: { trigger: el, start: 'top 90%', once: true }
+        });
+      }
+    });
+
+    // --- Floating decoration rings in hero ---
+    gsap.to('#hero-ring1', {
+      rotate: 360, repeat: -1, duration: 22, ease: 'none', transformOrigin: 'center center'
+    });
+    gsap.to('#hero-ring2', {
+      rotate: -360, repeat: -1, duration: 16, ease: 'none', transformOrigin: 'center center'
+    });
+
+    // --- Gold line reveal ---
+    gsap.from('.gold-line', {
+      scaleX: 0, transformOrigin: 'center', duration: 1.2, ease: 'power2.out',
+      scrollTrigger: { trigger: '.gold-line', start: 'top 85%', once: true }
+    });
+
+    /* ============================================================
+       12. KEYBOARD ACCESSIBILITY — Close modals with Escape
+    ============================================================ */
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') {
+        closeHideModal();
+        closeCart();
+        closeMobileNav();
+      }
+    });
+
+    /* ============================================================
+       13. LAZY LOAD / INTERSECTION OBSERVER for extra perf
+       FIX: if image is already complete (cached), onload never fires,
+       so we must check .complete and fade in immediately instead.
+    ============================================================ */
+    const lazyImgs = document.querySelectorAll('img[loading="lazy"]');
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const img = entry.target;
+            img.style.opacity = '0';
+            if (img.complete && img.naturalWidth > 0) {
+              // Already loaded (cached) — fade in immediately
+              gsap.to(img, { opacity: 1, duration: 0.6 });
+            } else {
+              img.onload  = () => gsap.to(img, { opacity: 1, duration: 0.6 });
+              img.onerror = () => { img.style.opacity = '1'; };
+            }
+            io.unobserve(img);
+          }
+        });
+      }, { rootMargin: '200px' });
+      lazyImgs.forEach(img => io.observe(img));
+    }
+
+    /* ============================================================
+       14. SMOOTH ANCHOR SCROLLING
+    ============================================================ */
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', e => {
+        const target = document.querySelector(a.getAttribute('href'));
+        if (target) {
+          e.preventDefault();
+          const offset = 80;
+          const top    = target.getBoundingClientRect().top + window.scrollY - offset;
+          window.scrollTo({ top, behavior: 'smooth' });
+        }
+      });
+    });
+
+    /* ============================================================
+       15. HERO FLOATING TEXT PARALLAX on mousemove
+    ============================================================ */
+    document.getElementById('hero').addEventListener('mousemove', e => {
+      const { innerWidth: W, innerHeight: H } = window;
+      const dx = (e.clientX / W - 0.5) * 18;
+      const dy = (e.clientY / H - 0.5) * 12;
+      gsap.to('#hero-content', { x: dx, y: dy, duration: 1.2, ease: 'power2.out' });
+      gsap.to('#hero-ring1',   { x: dx * 1.6, y: dy * 1.6, duration: 1.4, ease: 'power2.out' });
+      gsap.to('#hero-ring2',   { x: dx * 2.2, y: dy * 2.2, duration: 1.6, ease: 'power2.out' });
+    });
+
+    /* ============================================================
+       16. PAGE LOAD — safety net only (do NOT clear GSAP inline styles)
+       REMOVED: the old code stripped inline opacity from .will-animate
+       elements after 3s, which caused hero text to snap invisible
+       because there was no CSS rule restoring opacity:1 for those elements.
+       GSAP sets opacity via inline style — leave it alone.
+    ============================================================ */
+
+  </script>
+</body>
+</html>
